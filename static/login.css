@@ -1,0 +1,48 @@
+.login-container {
+	width: 300px;
+	margin: 100px auto;
+	padding: 20px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	text-align: center;
+	
+}
+
+.login-container h1 {
+	font-size: 24px;
+	margin-bottom: 20px;
+}
+
+label {
+	display: block;
+	text-align: left;
+	margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="password"] {
+	
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	margin-bottom: 20px;
+	
+}
+
+button {
+	background-color: #4CAF50;
+	color: #fff;
+	padding: 10px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+button:hover {
+	background-color: #3e8e41;
+}
+
+label,
+input {
+  display: inline-block;
+}

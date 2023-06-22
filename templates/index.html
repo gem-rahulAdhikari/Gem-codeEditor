@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Gem-Code Editor</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-app.js"></script>
+	  <script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-database.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static',filename='favicon.ico') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='modal1.css') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='index.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+</head>
+ <script>
+//  window.onload = function() {
+//   const currentUrl = window.location.href;
+//   let UserKey = "";
+//   fetch('https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/getSubmission')
+//     .then(response => response.json())
+//     .then(data => {
+//       for (let i = 0; i < data.length; i++) {
+//         const item = data[i];
+//         if (currentUrl == item.url) {
+//           UserKey = item.Key;
+//           break;
+//         }
+//       }
+//       console.log(UserKey);
+//       console.log(currentUrl);
+//       const validation = prompt("Please enter the validation code:");
+//       if (validation == UserKey) {
+//         document.getElementById("login-container").style.display = "block";
+//       } else {
+//         window.location.href = "/error";
+//       }
+//     })
+//     .catch(error => console.error(error));
+// }
+// Get references to the modal and div elements
+
+
+
+</script> 
+<body>
+  <div id="secretKeyModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p>Enter secret key:</p>
+      <input type="password" id="secretKeyInput">
+      <button id="submitSecretKey">Submit</button>
+    </div>
+  </div>
+  
+<div id="content" class="hidden">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom" style="background-color: #F5F5F5;">
+        <div class="container-fluid">
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link active navbar-brand" href= "{{ url_for('static',filename='url.js') }}">Profile</a>
+                </li>
+                    <li class="nav-item">
+                        <a class="nav-link active navbar-brand" aria-current="page" href="#">Question</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active navbar-brand" href="#">Editor</a>
+                    </li>
+                </ul>
+            </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+        <div class="d-flex align-items-start">
+          
+          <img src="{{ url_for('static', filename='Gemini_Logo.png') }}" alt="Logo"
+                class="float-right mr-0 mt-0" style="width: 250px; height: 28px;">
+        </div>
+    </nav>
+    
+    <div class="container-fluid bg-light  border border-dark">
+        <div class="row ">
+            
+          <div class="col-8 ">
+            <!-- larger div content here -->
+            <select id="dropdown" class="language">
+                <option value="">Select Languages</option>
+                <option value="71">Python</option>
+                <option value="50">C</option>
+                <option value="62">Java</option>
+                
+             </select>
+             {% if logged_in and session['user'] %}
+             <select id="dropdown1" class="language">
+                <option value="">Result</option>
+                </select>
+                {% endif %}
+                {% if logged_in and session['user'] %}
+                <div class="container1">
+                  <button type="button" class="btn " id="Runbtn" style="background-color: #38A3A5; color:white; margin-left:10vw;" onclick="disableButton()" disabled>Run</button>
+                  <button type="button" class="btn" id="Executebtn" style="background-color: #38A3A5; color:white;" onclick="disableButton()" disabled>Submit</button>
+          
+                </div>
+                {% else %}
+                <div class="container1">
+                  <button type="button" class="btn " id="Runbtn" style="background-color: #38A3A5; color:white; margin-left:10vw;">Run</button>
+                  <button type="button" class="btn" id="Executebtn" style="background-color: #38A3A5; color:white;">Submit</button>
+          
+                </div>
+                {% endif %}
+                 
+            <div class="border rounded mt-3 mb-3 ">
+                <div class="form-floating  ">
+                  <form method="POST" action="/submit">
+                    {% if logged_in and session['user'] %}
+                    <textarea class="form-control" readonly placeholder="Write Here....." id="code_input"  name="code_input" style="height: 75vh;" onkeydown="if(event.keyCode===9){
+                      var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;
+                  }"></textarea>
+    {% else %}
+    <textarea class="form-control" placeholder="Write Here....." id="code_input"  name="code_input" style="height: 75vh;" onkeydown="if(event.keyCode===9){
+      var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;
+  }"></textarea>
+    {% endif %}
+                    
+                  </form>
+                    <label for="floatingTextarea2"></label>
+                  </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="row ">
+                <div class="mt-5">Input</div>
+              <div class="col-12 mt-2">
+                <!-- smaller div content here -->
+                
+                    <div class="form-floating">
+                      {% if logged_in and session['user'] %}
+                        <textarea class="form-control" readonly placeholder="Leave a comment here" id="floatingTextarea2" name="input_area" style="height: 25vh"></textarea>
+                        {% else %}
+                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" name="input_area" style="height: 25vh"></textarea>
+                        {% endif %}
+                        <label for="floatingTextarea2"></label>
+                      </div>
+                 
+              </div>
+              <div class="mt-5">
+               <!-- <input type="checkbox" id="checkbox" /> -->
+                <label for="checkbox" style="color:black;margin-left:2vw;">
+                </label>
+              </div>
+              <div class="pt-5">Output</div>
+              <div class="col-12 mt-2" >
+                <!-- smaller div content here -->
+                <div class="form-floating">
+                  {% if logged_in and session['user'] %}
+                    <textarea class="form-control" readonly placeholder="Leave a comment here" id="result" name="code_output" style="height: 25vh"></textarea>
+                    {% else %}
+                    <textarea class="form-control" placeholder="Leave a comment here" id="result" name="code_output" style="height: 25vh"></textarea>
+                    {% endif %}
+                    <label for="floatingTextarea2"></label>
+                  </div>
+                    
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+
+</body>
+<script>
+//   	var modal = document.getElementById("validation-modal");
+// 		var button = document.getElementById("validation-button");
+// 		var input = document.getElementById("validation-input");
+// 		var loginContainer = document.getElementById("login-container");
+
+// 		// Show the modal on page load
+// 		window.onload = function() {
+//   const currentUrl = window.location.href;
+//   let UserKey = "";
+//   fetch('https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/getSubmission')
+//     .then(response => response.json())
+//     .then(data => {
+//       for (let i = 0; i < data.length; i++) {
+//         const item = data[i];
+//         if (currentUrl == item.url) {
+//           UserKey = item.Key;
+//           break;
+//         }
+//       }
+//       console.log(UserKey);
+//       console.log(currentUrl);
+//       modal.style.display = "block";
+//       button.addEventListener("click", function() {
+//         const validation = input.value.trim();
+//         if (validation === UserKey) {
+//           modal.style.display = "none";
+//           loginContainer.style.display = "block";
+//         } else {
+//           alert("Invalid validation code!");
+//         }
+//       });
+//     })
+//     .catch(error => console.error(error));
+// }
+
+// const secretKeyModal = document.getElementById('secretKeyModal');
+// const content = document.getElementById('content');
+
+// // Show secret key modal when page is loaded
+// window.addEventListener('load', () => {
+//   secretKeyModal.style.display = 'block';
+// });
+
+// // Add event listener to submit button
+// document.getElementById('submitSecretKey').addEventListener('click', () => {
+//   const secretKeyInput = document.getElementById('secretKeyInput');
+//   const secretKey = secretKeyInput.value;
+
+//   // Check if secret key is correct
+//   if (secretKey === 'rahul') {
+//     // Show content
+//     secretKeyModal.style.display = 'none';
+//     content.classList.remove('hidden');
+//   } else {
+//     // Show error message
+//     alert('Invalid secret key. Please try again.');
+//   }
+// });
+
+const currentUrl = window.location.href;
+let UserKey = null;
+
+const secretKeyModal = document.getElementById("secretKeyModal");
+const secretKeyInput = document.getElementById("secretKeyInput");
+const submitSecretKeyButton = document.getElementById("submitSecretKey");
+const closeButton = document.querySelector(".close");
+
+// Add event listener to the submit button
+submitSecretKeyButton.addEventListener("click", () => {
+  console.log("hello");
+  const validation = secretKeyInput.value.trim();
+  if (validation === UserKey ) {
+    document.getElementById("content").style.display = "block";
+    secretKeyModal.style.display = "none";
+  } else {
+    alert("Invalid secret key, please try again!");
+  }
+});
+
+// Add event listener to the close button
+closeButton.addEventListener("click", () => {
+  secretKeyModal.style.display = "none";
+});
+
+// Add event listener to the window's load event
+window.addEventListener('load', () => {
+  console.log("hello john---")
+  //  fetch('https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/getSubmission')
+     fetch('https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/getAdminTableData')
+    .then(response => response.json())
+    .then(data => {
+      for (let i = 0; i < data.length; i++) {
+       
+        const item = data[i];
+        if (currentUrl === item.url) {
+          UserKey = item.SecretKey;
+          break;
+        }
+      }
+      // console.log(UserKey);
+      // console.log(currentUrl);
+      secretKeyModal.style.display = "block";
+      secretKeyInput.focus();
+    })
+    .catch(error => console.error(error));
+});
+
+	
+  var firebaseConfig = {
+    apiKey: "AIzaSyCTjZFh1R-HgF-TTspx3S3T2d7BOPjJnGM",
+authDomain: "flask-app-b27bb.firebaseapp.com",
+databaseURL: "https://flask-app-b27bb-default-rtdb.firebaseio.com",
+projectId: "flask-app-b27bb",
+storageBucket: "flask-app-b27bb.appspot.com",
+messagingSenderId: "643677151622",
+appId: "1:643677151622:web:ea58239d04fc0415e88c07",
+measurementId: "G-EZH5DP62QM"
+  };
+
+
+
+  
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  // Get a reference to the Realtime Database
+  var db = firebase.database();
+
+  
+  var messageInput = document.getElementById('code_input');
+
+// document.getElementById('send-button').addEventListener('click', function() {
+// 	var message = messageInput.value;
+// 	db.ref('messages').push({
+// 		message: message
+// 	});
+// 	messageInput.value = '';
+// });
+
+//var messageInput = document.getElementById('message-input');
+
+messageInput.addEventListener('input', function() {
+var message = messageInput.value;
+db.ref('messages').set({
+  message: message
+});
+});
+
+messageInput.addEventListener('keydown', function(event) {
+if (event.keyCode === 8) { // detect backspace key
+  event.preventDefault(); // prevent the default backspace behavior
+  var message = messageInput.value.slice(0, -1); // remove the last character from the input field
+  db.ref('messages').set({
+    message: message
+  }); // update the database with the new message
+}
+});
+
+db.ref('messages').on('value', function(snapshot) {
+var message = snapshot.val().message;
+messageInput.value = message || ''; // update the input field with the new message, or empty string if message is undefined
+});
+
+function disableButton() {
+  // Get a reference to the button element
+  const button = document.getElementById("Runbtn");
+
+  // Disable the button's click activity
+  button.disabled = true;
+}
+
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='index.js') }}"></script>
+
+</html>

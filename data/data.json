@@ -1,0 +1,8 @@
+{
+    "adminTableData":"https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/getAdminTableData",
+    "updateAdminTableData":"https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/updateAdminTable",
+    "getSubmissions":"https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/getSubmissions",
+    "setSubmissions":"https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/userSubmissions",
+    "updateSubmissions":"https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/updateSubmissions"
+   
+}

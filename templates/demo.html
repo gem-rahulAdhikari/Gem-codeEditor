@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Gem-Code Editor</title>
+  <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static',filename='favicon.ico') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+  <style>
+        .myTable {
+          font-family: Arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+          margin: 20px 0;
+        }
+        
+        .myTable td, .myTable th {
+          border: 1px solid #ddd;
+          padding: 8px;
+        }
+        
+        .myTable tr:nth-child(even) {
+          background-color: #f2f2f2;
+        }
+        
+        .myTable tr:hover {
+          background-color: #ddd;
+        }
+        
+        .myTable th {
+          padding-top: 12px;
+          padding-bottom: 12px;
+          text-align: left;
+          background-color: #4CAF50;
+          color: white;
+        }
+        table.myTable td,th {
+  text-align: center;
+}
+table.myTable th {
+  text-align: center;
+}
+h1 {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+button {
+    position: absolute;
+  top: 0;
+  right: 0;
+
+  background-color: #4CAF50; /* Set background color */
+  border: none; /* Remove border */
+  color: white; /* Set text color */
+  padding: 10px 20px; /* Set padding */
+  text-align: center; /* Center text */
+  text-decoration: none; /* Remove underline */
+  display: inline-block; /* Set display to inline-block */
+  font-size: 16px; /* Set font size */
+  margin: 10px; /* Set margin */
+  cursor: pointer; /* Change cursor on hover */
+  border-radius: 5px; /* Add rounded corners */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16); /* Add shadow */
+}
+
+button:hover {
+  background-color: #3e8e41; /* Change background color on hover */
+}
+i{
+  cursor: pointer;
+
+}
+#searchInput {
+  display: block;
+  margin: 0 auto;
+}
+
+
+        </style>
+        
+</head>
+<body>
+    <button id="logout-button" type="button">Logout</button>
+    <h1>Admin Page</h1>
+    <div class="text-center">
+      <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search...">
+    </div>
+	<table id="dataTable" class="myTable">
+        <thead>
+            <tr>
+                {% for header in headers %}
+                  <th>{{ header }}</th>
+                {% endfor %}
+                <th>Delete</th>
+              </tr>
+        </thead>
+        <tbody>
+          {% for d in data %}
+          <tr>
+            {% for key, value in d.items() %}
+              {% if key == 'url' %}
+              <td><a href="{{ value }}"><i class="fa-solid fa-eye" id="view"></i></a></td>
+              {% elif key == 'status' %}
+              <td class="editable" contenteditable="true">{{ value }}</td>
+              {% else %}
+              <td>{{ value }}</td>
+              {% endif %}
+            {% endfor %}
+            <td><i class="fa-solid fa-trash" data-id="{{ d._id }}"></i></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+</body>
+
+
+<script>
+   
+function searchTable() {
+  // Declare variables
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("searchInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("dataTable");
+  tr = table.getElementsByTagName("tr");
+
+  // Loop through all table rows, and hide those that don't match the search query
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[1]; // Change 0 to the index of the column you want to search
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}
+const deleteIcons = document.querySelectorAll('.fa-solid.fa-trash');
+
+deleteIcons.forEach(icon => {
+  icon.addEventListener('click', () => {
+    const idToDelete = icon.dataset.id;
+    console.log("hello");
+    console.log(idToDelete);
+    fetch(`https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/deleteUser?id=${idToDelete}`, {
+      method: 'DELETE'
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      console.log(`Object ${idToDelete} deleted successfully`);
+      // Remove the table row from the UI
+      const trElement = icon.closest('tr');
+      trElement.parentNode.removeChild(trElement);
+    })
+    .catch(error => {
+      console.error(`There was a problem deleting object ${idToDelete}:`, error);
+    });
+  });
+});
+
+$("#logout-button").on("click", function() {
+  // Make an AJAX request to the Flask server to log the user out
+  $.ajax({
+    type: "POST", // or "GET" depending on your server configuration
+    url: "/logout",
+    success: function() {
+      // Redirect the user to the login page after successful logout
+      window.location.href = "/login";
+    },
+    error: function(xhr, status, error) {
+      // Handle errors here
+      console.error(error);
+    }
+  });
+});
+
+$(document).ready(function() {
+  // Add event listener to editable cells
+  $('.editable').on('blur', function() {
+    // Get the updated value
+    var newValue = $(this).text();
+    // Get the row id
+    var rowId = $(this).closest('tr').data('id');
+    // Get the URL
+    var url = $(this).closest('tr').find('a').attr('href');
+    // Construct the data to be sent to the server
+    var data = {
+      rowId: rowId,
+      newValue: newValue,
+      url: url
+    };
+    console.log(data)
+    // Send the data to the server using AJAX
+    $.ajax({
+      url: '/updateStatus',
+      type: 'POST',
+      data: data,
+      success: function(response) {
+        // Handle success
+      },
+      error: function(xhr) {
+        // Handle error
+      }
+    });
+  });
+});
+
+
+</script>
+<script src="https://kit.fontawesome.com/3fcbd0cded.js" crossorigin="anonymous"></script>
+
+</html>

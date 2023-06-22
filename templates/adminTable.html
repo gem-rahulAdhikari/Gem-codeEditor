@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Gem-Code Editor</title>
+  <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static',filename='favicon.ico') }}">
+  
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/sha256.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.3/awesomplete.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.3/awesomplete.min.js"></script>
+
+    
+  <style>
+        .myTable {
+          font-family: Arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+          margin: 20px 0;
+        }
+        
+        .myTable td, .myTable th {
+          border: 1px solid #ddd;
+          padding: 8px;
+        }
+        
+        .myTable tr:nth-child(even) {
+          background-color: #f2f2f2;
+        }
+        
+        .myTable tr:hover {
+          background-color: #ddd;
+        }
+        
+        .myTable th {
+          padding-top: 12px;
+          padding-bottom: 12px;
+          text-align: left;
+          background-color: #38A3A5;
+          color: white;
+        }
+        table.myTable td,th {
+  text-align: center;
+}
+table.myTable th {
+  text-align: center;
+}
+h1 {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+#logout-button {
+    position: absolute;
+  top: 0;
+  right: 0;
+
+  background-color:#38A3A5; /* Set background color */
+  border: none; /* Remove border */
+  color: white; /* Set text color */
+  padding: 10px 20px; /* Set padding */
+  text-align: center; /* Center text */
+  text-decoration: none; /* Remove underline */
+  display: inline-block; /* Set display to inline-block */
+  font-size: 16px; /* Set font size */
+  margin: 10px; /* Set margin */
+  cursor: pointer; /* Change cursor on hover */
+  border-radius: 5px; /* Add rounded corners */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16); /* Add shadow */
+}
+
+#logout-button:hover {
+  background-color: #38A3A5; /* Change background color on hover */
+}
+i{
+  cursor: pointer;
+
+}
+#searchInput {
+  display: block;
+  margin: 0 auto;
+  max-width: 300px;
+}
+/* Styling for dropdown container */
+/* Hide the default dropdown arrow */
+.my-dropdown {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  color: #333;
+  background-color: #fff;
+  background-image: url('https://cdn3.iconfinder.com/data/icons/fatcow/32x32_0110/dropdown.png');
+  background-repeat: no-repeat;
+  background-position: right center;
+}
+
+/* Style the dropdown when it's open */
+.my-dropdown:focus {
+  outline: none;
+  border-color: #5b9dd9;
+  box-shadow: 0 0 4px #5b9dd9;
+}
+
+/* Style the dropdown options */
+.my-dropdown option {
+  padding: 8px 16px;
+  background-color: #fff;
+  color: #333;
+}
+
+/* Style the selected option */
+.my-dropdown option:checked {
+  background-color: #f3f3f3;
+}
+.interview-round {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  text-align: left;
+}
+
+.interview-round-title {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.interview-round-label {
+  font-weight: bold;
+  margin-right: 5px;
+  
+}
+/* The Modal */
+/* Style the modal container */
+.modal {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the modal */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0,0,0,0.5); /* Black background with transparency */
+}
+#myModal {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the modal */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0,0,0,0.5); /* Black background with transparency */
+}
+
+/* Style the modal content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 10px;
+  border: 1px solid #888;
+  width: 30%;
+  height: 50%;
+  box-shadow: 0px 2px 10px rgba(0,0,0,0.3);
+  border-radius: 5px;
+}
+
+.close{
+  position: absolute;
+  top: 102px;
+  right: 440px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #aaa;
+}
+.close1 {
+  position: absolute;
+  top: 95px;
+  right: 440px;
+  font-size: 30px;
+  font-weight: bold;
+  color: black;
+}
+
+.close:hover,.close1:hover,
+.close:focus,.close1:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+label {
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.round-input {
+  padding: 5px;
+  border-radius: 20px;
+  border: none;
+  background-color: #f2f2f2;
+  font-size: 12px;
+  width: 80%;
+  box-sizing: border-box;
+}
+
+button[type="submit"] {
+  background-color: #38A3A5;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 10px 20px;
+}
+
+button[type="submit"]:hover {
+  background-color: #38A3A5;
+}
+.reqLabel {
+    display: inline-block;
+    width: 100px;
+    text-align: left;
+    margin-right: 5px;
+    font-size: 12px;
+  }
+
+  .reqInput[type=text] {
+    width: 50px;
+    height: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    
+   }
+  .modal-content1 {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 10px;
+  border: 1px solid #888;
+  width: 30%;
+  height: 50%;
+  box-shadow: 0px 2px 10px rgba(0,0,0,0.3);
+  border-radius: 5px;
+  }
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  
+}
+
+.label1 {
+  margin-bottom: 5px;
+}
+
+.form-control {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f2f2f2;
+  padding: 10px;
+  margin-bottom:10px;
+  width: 340px;
+}
+
+.modal-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+ 
+}
+
+#submitFormBtn {
+  background-color: #38A3A5;
+ 
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 10px 20px;
+  margin-left:150px;
+  margin-top:20px;
+
+}
+#add-data-btn{
+  float: right !important;
+  margin-top:50px;
+}
+
+#add-data-btn label{
+  font-family: Arial, sans-serif;
+            font-size: 10px;
+            font-weight: bold;
+            color: white;
+           
+            padding: 5px;
+      
+          
+}
+
+#add-data-btn1 {
+  background-color: #38A3A5;
+  border: none;
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  
+}
+
+#add-data-btn1:hover {
+ 
+  background-color: #0c5859;
+}
+#add-round-btn{
+  float:left !important;
+  margin-top:2px;
+}
+#my-dropdown{
+  width:70% !important;
+  border-radius: 3px;
+}
+#dataTable th:nth-child(2),
+  /* Hide the corresponding column cells in each row */
+  #dataTable td:nth-child(2) {
+    display: none;
+  }
+
+  /* .slide-alert {
+      position: fixed;
+      bottom: 10px;
+      right: -300px;
+      z-index: 9999;
+      display: none;
+    } */
+    .slide-alert {
+    position: fixed;
+    top: 80%;
+    right: -300px;
+    background-color: #d4edda;
+    color: #155724;
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: right 0.3s ease-in-out;
+  }
+
+  .alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+  }
+
+        </style>
+        
+</head>
+<body>
+  <div id="add-data-btn">
+  
+  <button id="add-data-btn1">  <label>Add Data</label></button>
+</div> 
+<div class="slide-alert alert alert-success">
+ User Already added!
+</div>
+  <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display:none">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content1">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Interviewee</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="myForm">
+            <div class="form-group">
+              <label for="nameInput" class="label1">Name</label>
+              <input type="text" class="form-control" id="nameInput" name="nameInput" placeholder="Enter">
+            </div>
+            <div class="form-group">
+              <label for="emailInput" class="label1">Email</label>
+              <input type="email" class="form-control" id="emailInput" name="email" placeholder="Enter">
+            </div>
+            <div class="form-group">
+              <label for="recruiterInput" class="label1">Recruiter</label>
+              <input type="text" class="form-control" id="recruiterInput" name="recruiter" placeholder="Enter">
+            </div>
+            <div class="form-group">
+              <label for="experienceInput" class="label1">Experience</label>
+              <input type="text" class="form-control" id="experienceInput" name="experience" placeholder="Enter">
+            </div>
+            <div class="form-group">
+              <label for="companyInput" class="label1">Current Company</label>
+              <input type="text" class="form-control" id="companyInput" name="company" placeholder="Enter">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+           <button type="button" class="btn btn-primary" id="submitFormBtn">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+  <!--- modal for rounds update   -->
+  <div id="myModal" class="modal2" style="display:none">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Interview Details</h5>
+           <span class="close1" style="margin-left:200px;">&times;</span>
+       
+       
+      </div>
+    
+    <!-- <h2>Interview Details</h2> -->
+      <form id="my-form">
+        <label for="round-type">Round Type:</label>
+        <select id="round-type" name="round-type" class="round-input">
+          <option value="Technical">Technical</option>
+          <option value="Management">Management</option>
+          <option value="custom">Custom</option>
+        </select>
+        <br><br>
+        <div id="custom-round-type" style="display:none;">
+          <label for="custom-round-type-input">Custom Round Type:</label>
+          <input type="text" id="custom-round-type-input" name="custom-round-type-input" class="round-input">
+          <br><br>
+        </div>
+        <label for="round-date">Round Date:</label>
+        <input type="date" id="round-date" name="round-date" class="round-input"><br><br>
+        <div>
+          <button type="submit">Submit</button>
+        </div>
+      </form>
+      
+      
+    </div>
+  </div>
+  </div>
+    <button id="logout-button" type="button">Logout</button>
+    <h1>Admin Page</h1>
+    <div class="text-center">
+      <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search...">
+    </div>
+    
+	<table id="dataTable" class="myTable">
+        <thead>
+            <tr>
+              <th>S.No</th>
+                {% for header in headers %}
+                
+                  <th>{{ header }}</th>
+                
+                {% endfor %}
+                <th>Interview Rounds</th>
+                {% if role == 'HR' %}
+                <th>Delete</th>
+                {% endif %}
+              </tr>
+        </thead>
+        <tbody>
+         
+          {% for d in data %}
+          
+          <tr>
+            
+            <td  >{{loop.index}}</td>
+            {% for key, value in d.items() %}
+            {% if key == '_id'  %}
+            <td class="editable" contenteditable="false" data-key="_id" data-id="{{ d._id }}">{{ value }}</td>
+          
+            {% elif key == 'CombinedKey'  %}
+              {% if role == 'HR' %}
+            <td class="input-td">
+              <div>
+                <label for="url" class="reqLabel" >URL:</label>
+                <span class="copy-icon" onclick="copyToClipboard('{{ value.split()[0] }}')">
+                  <i class="fa-sharp fa-solid fa-eye"></i>
+                </span>
+              </div>
+              <div>
+                <label for="secret-key" class="reqLabel">Secret Key:</label>
+               
+                <span class="copy-icon" onclick="copyToClipboard('{{ value.split()[1] }}')">
+                  <i class="fa-solid fa-key"></i>
+                 </span>
+                <!-- <button id="Key_btn" style="width:30px;height:15px;margin-left:3px;"></button> -->
+                <button id="key_btn" data-id="{{ id }}" data-secret-key="{{ value.split()[1] }}" >Start</button>
+                
+                <!-- <button id="key_btn_exp" data-id="{{ id }}" data-secret-key="{{ value.split()[1] }}">Expire</button> -->
+              </div>
+            </td>
+            {% endif %}
+            {% elif key == 'Status'  %}
+            <td class="status-cell" data-key="Status" data-id="{{ d._id }} ">
+              <select id="status-dropdown">
+                <option value="onHold">onHold</option>
+                <option value="Pass">Pass</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+            </td>
+            {% elif key == 'Name'  %}
+            <td class="editable" contenteditable="false" data-key="Name" data-id="{{ d._id }}">{{ value }}</td>
+            {% elif key == 'Recruiter'  %}
+            <td class="editable" contenteditable="false" data-key="Recruiter" data-id="{{ d._id }}">{{ value }}</td>
+            {% elif key == 'Current_Company'  %}
+            <td class="editable" contenteditable="false" data-key="Current_Company" data-id="{{ d._id }}">{{ value }}</td>
+            {% elif key == 'Experience'  %}
+            <td class="editable" contenteditable="false" data-key="Experience" data-id="{{ d._id }}">{{ value }}</td>
+            {% else %}
+            <td>{{ value }}</td>
+            {% endif %}
+            {% endfor %}
+           
+            <td>
+              <i id="add-round-btn" class="fa-solid fa-square-plus" data-id="{{ d._id }}"></i>
+              <select id="my-dropdown">
+                <option value="">Interview</option>
+              </select>
+              <div id="interview-rounds"></div>
+            </td>
+            {% if role == 'HR' %}
+            <td><i class="fa-solid fa-trash" data-id="{{ d._id }}"></i></td>
+            {% endif %}
+           
+          </tr>
+          
+          {% endfor %}
+        </tbody>
+        
+      </table>
+</body>
+
+
+<script>
+  $(document).ready(function() {
+  $('#round-type').on('change', function() {
+    if ($(this).val() === 'custom') {
+      $('#custom-round-type').show();
+    } else {
+      $('#custom-round-type').hide();
+    }
+  });
+});
+
+const recruiterInput = document.getElementById('recruiterInput');
+const recruiterNames = ['Rahul', 'Bob', 'David', 'Karan']; // replace with your list of recruiter names
+
+new Awesomplete(recruiterInput, {
+  list: recruiterNames,
+  minChars: 1,
+  autoFirst: true,
+  filter: Awesomplete.FILTER_STARTSWITH
+});
+
+recruiterInput.addEventListener('input', function() {
+  // filter the recruiter names based on user input
+  const filteredRecruiterNames = recruiterNames.filter(name =>
+    name.toLowerCase().startsWith(this.value.toLowerCase())
+  );
+
+  // update the awesomplete object's list with filtered names
+  awesomplete.list = filteredRecruiterNames;
+});
+
+
+//------------------table color on load-----------
+
+// fetch('https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/getAdminTableData')
+//     .then(response => response.json())
+//     .then(data => {
+//       console.log(data);
+//       // Iterate over the data array
+//       data.forEach(item => {
+//         // Access the properties of each item
+       
+//       });
+     
+//     })
+//     .catch(error => console.error(error));
+
+// document.addEventListener('DOMContentLoaded', function() {
+//     const tableRows = document.querySelectorAll('#dataTable tbody tr');
+  
+//   tableRows.forEach(row => {
+//     const idCell = row.querySelector('td:nth-child(2)');
+//     const id = idCell.getAttribute('data-id');
+//     console.log(id);
+    
+//     // Use the 'id' variable as needed
+//   });
+// });
+// function onPageLoad() {
+   
+//     const selectElement = document.getElementById('status-dropdown');
+//     const selectedValue = 'onHold';
+//     setSelectedOption(selectElement, selectedValue);
+//   }
+//   function setSelectedOption(selectElement, selectedValue) {
+//     const option = selectElement.querySelector(`option[value="${selectedValue}"]`);
+//     option.setAttribute('selected', 'selected');
+//   }
+//   document.addEventListener('DOMContentLoaded', onPageLoad);
+function onPageLoad() {
+  // Get all the dropdown elements in the table
+  const dropdownElements = document.querySelectorAll('.status-cell select');
+
+  // Iterate through each dropdown element
+  dropdownElements.forEach(function(selectElement) {
+    const rowId = getRowId(selectElement);
+    const apiUrl = `https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/getAdminTableData`;
+
+// Make the API call using fetch or any other HTTP library
+fetch(apiUrl)
+.then(response => response.json())
+.then(dataArray => {
+  // Process the API response data array
+  // console.log(dataArray);
+
+  // Iterate over each data object
+  dataArray.forEach(data => {
+    // Retrieve the status value from each data object
+    if(rowId==data._id)
+    {
+      const status = data.Status;
+      console.log(status);
+      const selectedValue = status;
+      setSelectedOption(selectElement, selectedValue);
+    }
+
+  });
+})
+.catch(error => {
+  // Handle any errors that occurred during the API call
+  console.error(error);
+});
+   
+   
+  });
+}
+function getRowId(element) {
+  // Traverse up the DOM hierarchy to find the closest <tr> element
+  const row = element.closest('tr');
+  
+  // Find the hidden column cell within the row
+  const hiddenColumnCell = row.querySelector('td:nth-child(2)');
+  
+  if (hiddenColumnCell) {
+    return hiddenColumnCell.textContent.trim();
+  }
+  
+  return null; // Return null if _id value is not found
+}
+
+
+function setSelectedOption(selectElement, selectedValue) {
+  const option = selectElement.querySelector(`option[value="${selectedValue}"]`);
+  option.setAttribute('selected', 'selected');
+}
+
+document.addEventListener('DOMContentLoaded', onPageLoad);
+
+
+
+//----------------------------------------
+document.addEventListener('DOMContentLoaded', function() {
+  const tableRows = document.querySelectorAll('#dataTable tbody tr');
+
+  tableRows.forEach(row => {
+    const idCell = row.querySelector('td:nth-child(2)');
+    const id = idCell.getAttribute('data-id');
+    // console.log(id);
+
+    // Make the API call and set color based on status
+    makeAPICall(id, row);
+  });
+});
+
+function makeAPICall(id, row) {
+  // Use the 'id' variable to make the API call
+  // Replace 'API_ENDPOINT' with the actual endpoint URL
+  const apiUrl = `https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/getAdminTableData`;
+
+  // Make the API call using fetch or any other HTTP library
+  fetch(apiUrl)
+  .then(response => response.json())
+  .then(dataArray => {
+    // Process the API response data array
+    // console.log(dataArray);
+
+    // Iterate over each data object
+    dataArray.forEach(data => {
+      // Retrieve the status value from each data object
+      if(id==data._id)
+      {
+        const status = data.Status;
+        console.log(status);
+    //     const selectElement = document.getElementById('status-dropdown');
+    // const selectedValue = status;
+    // setSelectedOption(selectElement, selectedValue);
+      setColorForRow(status, row);
+      }
+      
+
+      // Set the color for the row based on the status
+     // setColorForRow(status, row);
+    });
+  })
+  .catch(error => {
+    // Handle any errors that occurred during the API call
+    console.error(error);
+  });
+
+}
+// function setSelectedOption(selectElement, selectedValue) {
+//     const option = selectElement.querySelector(`option[value="${selectedValue}"]`);
+//     option.setAttribute('selected', 'selected');
+//   }
+function setColorForRow(status, row) {
+  const statusMap = new Map([
+    ["Pass", "#138a36"],        // Green color in HEX format
+    ["Rejected", "#E94540"]     // Red color in RGB format
+  ]);
+  
+  const color = statusMap.get(status);
+  
+  if (color) {
+    row.style.backgroundColor = color;
+  }
+}
+
+
+
+
+
+//----------------------------------------------------
+
+function copyToClipboard(value) {
+  // Create a temporary input element
+  var tempInput = document.createElement("input");
+  tempInput.style.position = "absolute";
+  tempInput.style.left = "-1000px";
+  tempInput.value = value;
+  
+  // Append the input element to the body
+  document.body.appendChild(tempInput);
+  
+  // Copy the value to the clipboard
+  tempInput.select();
+  document.execCommand("copy");
+  
+  // Remove the temporary input element
+  document.body.removeChild(tempInput);
+  alert('Copied!');
+}
+
+
+
+const table = document.getElementById("dataTable");
+const rows = table.getElementsByTagName("tr");
+
+// Loop through the rows and apply the class based on the status value
+
+
+
+const statusMap = new Map([
+["Pass", "#138a36"],        // Green color in HEX format
+  ["Rejected", "#E94540"]   // Red color in RGB format
+]);
+
+
+const dropdowns2 = document.querySelectorAll("#status-dropdown");
+dropdowns2.forEach(dropdown => {
+  const selectedValue1 = localStorage.getItem("selectedStatus");
+  if (selectedValue1) {
+    dropdown.value = selectedValue1;
+  }
+  dropdown.addEventListener("change", function() {
+    const newValue = this.value;
+    const row = this.closest("tr");
+    // const rowId = row.querySelector('td:first-child').textContent;
+    const rowId = row.querySelector('td:nth-child(2)').textContent;
+    const statusCell = row.querySelector(".status-cell");
+    const status = statusCell.textContent.trim();
+
+    if (statusMap.has(newValue)) {
+      row.style.backgroundColor = statusMap.get(newValue);
+      localStorage.setItem(`selectedColor-${rowId}`, statusMap.get(newValue));
+    } else {
+      row.style.backgroundColor = "";
+      localStorage.removeItem(`selectedColor-${rowId}`);  // Reset background color if status doesn't match
+    }
+
+    var data = {
+      rowId: rowId,
+      newValue: newValue,
+      key: "Status",
+    };
+
+    // Send the data to the server using AJAX
+    $.ajax({
+      url: '/updateTable',
+      type: 'POST',
+      data: data,
+      success: function(response) {
+        // Handle success
+      },
+      error: function(xhr) {
+        // Handle error
+      }
+    });
+
+    // Store the selected value in local storage for the particular row
+    localStorage.setItem(`selectedStatus-${rowId}`, newValue);
+  });
+
+  // Retrieve the selected value from local storage for the particular row
+  const row = dropdown.closest("tr");
+  // const rowId = row.querySelector('td:first-child').textContent;
+  const rowId = row.querySelector('td:nth-child(2)').textContent;
+  selectedValue = localStorage.getItem(`selectedStatus-${rowId}`);
+  if (selectedValue1) {
+    dropdown.value = selectedValue;
+  }
+  const selectedColor = localStorage.getItem(`selectedColor-${rowId}`);
+  if (selectedColor) {
+    row.style.backgroundColor = selectedColor;
+  }
+});
+
+
+const modal1 = document.getElementById('myModal1');
+const closeBtn = document.querySelector('.close');
+
+
+$("#add-data-btn").on("click", function() {
+  
+  modal1.style.display = "block";
+})
+closeBtn.addEventListener('click', () => {
+  // Add your code to handle the close button click event
+  modal1.style.display = "none";
+});
+//-------------Insert user data in database
+
+const hardcodedValues = {
+  Status: "onHold",
+  // Interview_Rounds: [
+  //   {
+  //     Round1: {
+  //       Date: "2023-04-09",
+  //       Round: "Technical",
+  //       Feedback: "very good",
+  //       Result: "None",
+  //     }
+  //   }
+  // ],
+ 
+};
+document.getElementById("submitFormBtn").addEventListener("click", async function() {
+  console.log("hello")
+  const Name = document.getElementById('nameInput').value;
+  const Email = document.getElementById('emailInput').value;
+  const Recruiter = document.getElementById('recruiterInput').value;
+  const Experience = document.getElementById('experienceInput').value;
+  const Current_Company = document.getElementById('companyInput').value;
+  let userAlreadyExists = false;
+  fetch('https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/getAdminTableData')
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      // Iterate over the data array
+      data.forEach(item => {
+        // Access the properties of each item
+        if(item.Name==Name&&item.Email==Email)
+        {
+          userAlreadyExists = true;
+         
+          // alert('User Already Created');
+         
+          // location.reload();
+          setTimeout(function(){
+            $('.slide-alert').show().animate({right: '10px'}, 'fast');
+              setTimeout(function() {
+                $('.slide-alert').animate({right: '-300px'}, 'fast', function() {
+                  $(this).hide();
+                });
+              }, 3000);
+    //do what you need here
+}, 2000);
+          // $('.slide-alert').show().animate({right: '10px'}, 'fast');
+          //     setTimeout(function() {
+          //       $('.slide-alert').animate({right: '-300px'}, 'fast', function() {
+          //         $(this).hide();
+          //       });
+          //     }, 3000);
+          
+        }
+      });
+      if (!userAlreadyExists) {
+        createNewUser();
+      }
+    })
+    .catch(error => console.error(error));
+
+  async function createNewUser() {
+    var jsonData= await generateUrl(Name,Email);
+    console.log("rahul is unique cred")
+    console.log(jsonData);
+    console.log("rahul is unique cred")
+    var url = jsonData.UniqueUrl;
+    var SecretKey = jsonData.SecretKey;
+    // var url = " ";
+    // var SecretKey = " ";
+    console.log(url);
+
+    const payload = {
+      Status:'onHold',
+      Name,
+      Email,
+      Recruiter,
+      Experience,
+      Current_Company,
+      Interview_Rounds:[
+        {
+          Round1: {
+            Date: "2023-04-09",
+            Round: "Technical",
+            Feedback: " ",
+            Result: " ",
+          }
+        }
+      ],
+      url,
+      SecretKey,
+      keyStatus:"F"
+    };
+
+    const url1 = 'https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/setAdminTableData'; // replace with your resource URL
+ // replace with your resource URL
+
+    fetch(url1, {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      // handle response data
+      console.log("hellloooooo"+data);
+      location.reload();
+      $('#myModal1').modal('hide');
+    })
+    .catch(error => {
+      // handle errors
+    });
+  }
+});
+
+// document.getElementById("submitFormBtn").addEventListener("click", async function() {
+//   console.log("hello")
+//   const Name = document.getElementById('nameInput').value;
+//   const Email = document.getElementById('emailInput').value;
+//   const Recruiter = document.getElementById('recruiterInput').value;
+//   const Experience = document.getElementById('experienceInput').value;
+//   const Current_Company = document.getElementById('companyInput').value;
+//   fetch('https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/getAdminTableData')
+//   .then(response => response.json())
+//   .then(data => {
+//     console.log(data);
+//     // Iterate over the data array
+//     data.forEach(item => {
+//       // Access the properties of each item
+//       if(item.Name==Name&&item.Email==Email)
+//       {
+//         alert('User Already Created');
+//       }
+      
+      
+//     });
+//   })
+//   .catch(error => console.error(error));
+//   var jsonData= await generateUrl(Name,Email);
+//   console.log("rahul is unique cred")
+//   console.log(jsonData);
+//   console.log("rahul is unique cred")
+//   var url = jsonData.UniqueUrl;
+// var SecretKey = jsonData.SecretKey;
+// console.log(url);
+
+//   const payload = {
+//     Status:'onHold',
+//     Name,
+//     Email,
+//     Recruiter,
+//     Experience,
+//     Current_Company,
+//     Interview_Rounds:[
+//       {
+//         Round1: {
+//           Date: "2023-04-09",
+//         Round: "Technical",
+//         Feedback: "very good",
+//         Result: "None",
+//         }
+//       }
+//     ],
+//     url,
+//     SecretKey
+//   };
+
+//   const url1 = 'https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/setAdminTableData'; // replace with your resource URL
+
+//   fetch(url1, {
+//     method: "POST",
+//     body: JSON.stringify(payload),
+//     headers: {
+//       'Content-Type': 'application/json'
+//     }
+//   })
+//   .then(response => response.json())
+//   .then(data => {
+//     // handle response data
+//     console.log("hellloooooo"+data);
+//     location.reload();
+//     $('#myModal1').modal('hide');
+   
+//   })
+//   .catch(error => {
+//     // handle errors
+//   });
+  
+  
+  
+
+//   // Perform AJAX request here to submit form data to server
+// });
+
+
+
+//--------------------------------
+let gRowId=" ";
+let gEmail=" ";
+const dropdowns1 = document.getElementById('my-dropdown');
+const dropdowns = document.querySelectorAll('#my-dropdown');
+const dropdowns12 = document.querySelectorAll('.my-dropdown');
+
+//this code will load the option in dropdown dynamically-----------------------------
+dropdowns.forEach(dropdown => {
+  // Get the name of the row that contains the dropdown
+  // const name = dropdown.parentNode.parentNode.querySelector('td:first-child').textContent;
+  const name = dropdown.parentNode.parentNode.querySelector('td:nth-child(2)').textContent;
+
+// Fetch the data and add the options to the dropdown
+  fetch(`https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/getAdminTableData`)
+    .then(response => response.json())
+    .then(data => {
+      data.forEach(item => {
+        if(item._id==name) {
+          for (let j = 0; j < item.Interview_Rounds.length; j++) {
+            const round = item.Interview_Rounds[j];
+            for (const key in round) {
+              if (Object.hasOwnProperty.call(round, key)) {
+                const option = document.createElement('option');
+                option.text = key;
+                option.value = key;
+                dropdown.appendChild(option);
+              }
+            }
+          }
+        }
+       
+      });
+      const allOption = document.createElement('option');
+            allOption.value = 'all';
+            allOption.textContent = 'All Interview Rounds';
+            dropdown.appendChild(allOption);
+    });
+  
+});
+
+dropdowns.forEach((dropdown) => {
+  dropdown.addEventListener('change', (event) => {
+    console.log("hello")
+    // const name = event.target.parentNode.parentNode.querySelector('td:first-child').textContent;
+    const name = dropdown.parentNode.parentNode.querySelector('td:nth-child(2)').textContent;
+
+    const selectedOption = event.target.value;
+    const interviewRoundsDiv = dropdown.parentNode.querySelector('#interview-rounds');
+    interviewRoundsDiv.innerHTML = '';
+    const dropdownElement = event.target;
+    console.log(name+"hello rahul"+selectedOption)
+
+    fetch(`https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/getAdminTableData`)
+      .then(response => response.json())
+      .then(data => {
+  
+        console.log(data);
+        // do something with the returned data
+        for (let i = 0; i < data.length; i++) {
+ const item = data[i];
+ if(name==item._id)
+ {
+  console.log(item.Name)
+  console.log("Interview Rounds:")
+      for (let j = 0; j < item.Interview_Rounds.length; j++) {
+        const round = item.Interview_Rounds[j];
+        for (const key in round) {
+          if (Object.hasOwnProperty.call(round, key)) {
+            const roundObj = round[key];
+            //  console.log(key);
+             if(key==selectedOption)
+             {
+              console.log("selected option"+key)
+              const roundDiv = document.createElement('div');
+roundDiv.classList.add('interview-round');
+roundDiv.innerHTML = `
+  <div class="interview-round-title" style="text-align:center;"><strong>${key}</strong></div>
+  <div><span class="interview-round-label">Date:</span> ${roundObj.Date}</div>
+  <div><span class="interview-round-label">Round:</span> ${roundObj.Round}</div>
+  <div><span class="interview-round-label">Feedback:</span> <input type="text"  id="${key}-feedback" value="${roundObj.Feedback}" class="feed" /></div>
+  <div><span class="interview-round-label">Result:</span> <input type="text"   id="${key}-result" value="${roundObj.Result}" class="feed" /></div>
+
+`;
+interviewRoundsDiv.appendChild(roundDiv);
+const feedbackInput = document.getElementById(`${key}-feedback`);
+const resultInput = document.getElementById(`${key}-result`);
+
+// feedbackInput.addEventListener('keypress', (event) => {
+//   if (event.keyCode === 13) {
+//     const value=`${event.target.value}`;
+//     console.log("hello fir")
+//     fetch('https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/getAdminTableData')
+//   .then(response => response.json())
+//   .then(data => {
+//     console.log(data);
+//     // Iterate over the data array
+//     data.forEach(item => {
+//       // Access the properties of each item
+     
+      
+//     });
+//   })
+//   .catch(error => console.error(error));
+//     console.log(`Feedback entered: ${event.target.value}`);
+//   }
+// });
+// resultInput.addEventListener('keypress', (event) => {
+//   if (event.keyCode === 13) {
+//     console.log(`Result entered: ${event.target.value}`);
+//   }
+// });
+             }
+             else if(selectedOption=="all"){
+              console.log(selectedOption+"hellojii")
+              const roundDiv = document.createElement('div');
+roundDiv.classList.add('interview-round');
+roundDiv.innerHTML = `
+  <div class="interview-round-title" style="text-align:center;"><strong>${key}</strong></div>
+  <div><span class="interview-round-label">Date:</span> ${roundObj.Date}</div>
+  <div><span class="interview-round-label">Round:</span> ${roundObj.Round}</div>
+  <div><span class="interview-round-label">Feedback:</span> <input type="text"  id="${key}-feedback" value="${roundObj.Feedback}"   class="feed"/></div>
+  <div><span class="interview-round-label">Result:</span> <input type="text"  id="${key}-result" value="${roundObj.Result}"  class="feed"/></div>
+
+`;
+interviewRoundsDiv.appendChild(roundDiv);
+             }
+           
+          }
+        }
+      }
+    }
+}
+      })
+      .catch(error => {
+        console.error(error);
+        // handle the error
+      });
+  });
+});
+
+var gNumber=0;
+
+// Get all the buttons with the class "add-round-btn"
+const addRoundButtons = document.querySelectorAll('#add-round-btn');
+
+// Loop through the buttons and add a click event listener to each one
+addRoundButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    console.log("vlivked")
+    const rowId = button.dataset.id;
+    gRowId=rowId;
+    console.log(gRowId)
+    fetch('https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/getAdminTableData')
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    // Iterate over the data array
+    data.forEach(item => {
+      // Access the properties of each item
+      if(item._id==rowId)
+      {
+        gEmail=item.Email;
+        console.log(item.Email);
+         gNumber=item.Interview_Rounds.length+1;
+
+         //post request
+          // Prepare data for POST request
+          const data2 = {
+    
+  filter: {
+    url: item.url
+  },
+  submission_No:"1",
+    submittedCode: "",
+    inputParameter: " ",
+    output: " ",
+    roundNumber:gNumber
+  }
+
+
+        // Send POST request
+        fetch('https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/updateRounds', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data2)
+        })
+          .then(response => response.json())
+          .then(responseData => {
+            // Handle the response from the POST request
+            console.log(responseData);
+          })
+          .catch(error => console.error(error));
+      
+      }
+      
+      
+    });
+  })
+  .catch(error => console.error(error));
+    const modal = document.getElementById("myModal");
+    modal.style.display = "block";
+    const closeButton = document.querySelector('.close1');
+  closeButton.addEventListener('click', () => {
+    modal.style.display = "none";
+  });
+    // const closeIcon = modal.querySelector('.close');
+    // closeIcon.addEventListener('click', () => {
+    //   modal.style.display = "none";
+    // });
+  
+  });
+});
+
+//set the new round in the db---------------------------------------
+
+///------------------------------------------
+const form = document.querySelector('#my-form');
+const roundTypeSelect = document.querySelector('#round-type');
+const customRoundType = document.querySelector('#custom-round-type');
+
+
+form.addEventListener('submit', event => {
+  event.preventDefault(); // prevent default form submission behavior
+  console.log(gRowId+"This is the id of addd button"+gEmail);
+  // const roundNumber = document.querySelector('#round-number').value;
+  // const roundType = document.querySelector('#round-type').value;
+  // const roundDate = document.querySelector('#round-date').value;
+  var roundType = roundTypeSelect.value;
+    if (roundType === 'custom') {
+      roundType = document.querySelector('#custom-round-type-input').value;
+    }
+    
+    const roundNumber='';
+    const roundDate = document.querySelector('#round-date').value;
+  //   fetch(`https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/getAdminTableData`)
+  // .then(response => response.json())
+  // .then(data => {
+  //   for (let i = 0; i < data.length; i++) {
+  //     const item = data[i];
+  //     console.log(item);
+  //     if(item._id==gRowId)
+  //     {
+  //      gNumber=item.Interview_Rounds.length+1;
+  //      console.log(gNumber);
+  //      break; 
+  //     }
+  //   }
+  // })
+  // .catch(error => console.error(error));
+  const filter = {
+    "Email": gEmail
+  };
+
+  const payload = {
+    filter,
+    roundNumber:gNumber,
+    roundType,
+    roundDate,
+    Feedback: '',
+    Result:'',
+  };
+  const url = 'https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/setInterviewRounds'; // replace with your resource URL
+
+  fetch(url, {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    // handle response data
+    console.log(data);
+    location.reload();
+    $('#myModal').modal('hide'); // hide the modal
+  })
+  .catch(error => {
+    // handle errors
+  });
+});
+
+
+
+async function generateUrl(Name, Email) {
+  var UniqueUrl = '';
+  var SecretKey = '';
+  var myBoolean = false;
+
+  try {
+    const response = await fetch('https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/getAdminTableData');
+    const data = await response.json();
+
+    for (let i = 0; i < data.length; i++) {
+      const item = data[i];
+
+      if (item.Name === Name && item.Email === Email) {
+        myBoolean = true;
+        UniqueUrl = item.url;
+        SecretKey = item.Key;
+        break;
+      }
+    }
+
+    if (myBoolean === false) {
+      const { uniqueUrl, stringToHash1 } = await setDetails(Name, Email);
+      UniqueUrl = uniqueUrl;
+      SecretKey = stringToHash1;
+    }
+
+    console.log("UniqueUrl", UniqueUrl);
+    return { UniqueUrl, SecretKey };
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function setDetails(Name, Email) {
+//   const apiUrl = `https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/submissions`; // Replace with your app ID and function name
+// const url2 = 'https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/userSubmissions';
+
+  const salt = Math.random().toString(36).substring(2, 15);
+  const url2 = 'https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/userSubmissions';
+  const stringToHash = Email + salt;
+  console.log("key " + stringToHash)
+  var hexHash = CryptoJS.SHA256(stringToHash)
+  const uniqueUrl = "http://gem-codeeditor.wl.r.appspot.com/?name=".concat(hexHash);
+  console.log(uniqueUrl)
+  const salt1 = Math.random().toString(36).substring(2, 15);
+  const stringToHash1 = salt1;
+
+  // const data2 = {
+  //   "Rounds": [
+  //     {
+  //       "1":[
+  //        {
+  //         "Submission":"1",
+  //         "SubmittedCode":"",
+  //         "Input_Parameter":"",
+  //         "Output":""
+  //        },
+  //        {
+  //         "Submission":"2",
+  //         "SubmittedCode":"",
+  //         "Input_Parameter":"",
+  //         "Output":""
+
+  //        }
+  //       ]
+  //     },
+  //     {
+  //       "2":[
+  //       {
+  //         "Submission":"1",
+  //         "SubmittedCode":"",
+  //         "Input_Parameter":"",
+  //         "Output":""
+  //        },
+  //        {
+  //         "Submission":"2",
+  //         "SubmittedCode":"",
+  //         "Input_Parameter":"",
+  //         "Output":""
+
+  //        }
+
+  //       ]
+  //     }
+    
+  //   ],
+  //   "submittedCode": [],
+  //   "inputArray": [],
+  //   "outputArray": [],
+  //   "name": Name,
+  //   "url": uniqueUrl,
+  //   "key": stringToHash1,
+  // }
+
+  const data2 = {
+    "Rounds": [
+      {
+        "1":[
+         {
+          "Submission":"1",
+          "SubmittedCode":"",
+          "Input_Parameter":"",
+          "Output":""
+         }
+        ]
+      }
+    
+    ],
+    "name": Name,
+    "url": uniqueUrl,
+    "key": stringToHash1,
+  }
+
+  try {
+    fetch(url2, {
+  method: 'POST',
+  body: JSON.stringify(data2),
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  // handle the response of the second request
+  console.log('Response from API 2:', data);
+})
+.catch(error => console.error(error));
+
+    return { uniqueUrl, stringToHash1 };
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+//--------Delete
+const deleteIcons = document.querySelectorAll('.fa-solid.fa-trash');
+deleteIcons.forEach(icon => {
+  icon.addEventListener('click', () => {
+    const idToDelete = icon.dataset.id;
+    console.log("hello");
+    console.log(idToDelete);
+    fetch(`https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/deleteAdminTableData?id=${idToDelete}`, {
+      method: 'DELETE'
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      console.log(`Object ${idToDelete} deleted successfully`);
+      // Remove the table row from the UI
+      const trElement = icon.closest('tr');
+      trElement.parentNode.removeChild(trElement);
+    })
+    .catch(error => {
+      console.error(`There was a problem deleting object ${idToDelete}:`, error);
+    });
+  });
+});
+
+$('.editable').on('dblclick', function() {
+  // Make the content editable
+  $(this).attr('contenteditable', true);
+});
+
+
+//----------Update editable col
+$(document).ready(function() {
+ 
+  // Add event listener to editable cells
+  $('.editable').on('blur', function() {
+    // Get the updated value
+    var newValue = $(this).text();
+    // Get the row id
+    // var rowId = $(this).closest('td').data('id');
+    var rowId = $(this).closest('tr').find('td:nth-child(2)').data('id');
+    console.log(rowId);
+
+    var key = $(this).data('key');
+
+    console.log(key);
+    var data = {
+      rowId: rowId,
+      newValue: newValue,
+      key: key,
+    };
+    console.log(data)
+    // Send the data to the server using AJAX
+    $.ajax({
+      url: '/updateTable',
+      type: 'POST',
+      data: data,
+      success: function(response) {
+        location.reload();
+        // Handle success
+      },
+      error: function(xhr) {
+        // Handle error
+      }
+    });
+    
+  });
+});
+
+//--------------
+function searchTable() {
+  // Declare variables
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("searchInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("dataTable");
+  tr = table.getElementsByTagName("tr");
+
+  // Loop through all table rows, and hide those that don't match the search query
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[2]; // Change 0 to the index of the column you want to search
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+
+}
+
+//----------------key session----------------------------
+// const SecretKeyActivity = document.querySelectorAll('#key_btn');
+
+
+// SecretKeyActivity.forEach(button => {
+//   button.addEventListener('click', () => {
+//     console.log("vlivked")
+//     const row = button.closest('tr');
+//     const secretKeyElement = row.querySelector('[data-secret-key]');
+//     const secretKey = secretKeyElement.dataset.secretKey;
+
+//     console.log("Secret Key:", secretKey);
+   
+  
+     
+//   var data = {
+//     secretKey: secretKey,
+    
+//   };
+//     $.ajax({
+//   url: '/generate_session/' + secretKey,
+//   type: 'POST',
+//   data:data, // Replace with any additional data you want to send
+//   success: function(response) {
+//    console.log("hello msg send successfully")
+//   },
+//   error: function(xhr) {
+//     // Handle error
+//     alert("Error occurred: " + xhr.responseText);
+//   }
+// });
+//   });
+// });
+const SecretKeyActivity = document.querySelectorAll('#key_btn');
+
+let clickCount = 0;
+let timeout;
+
+// Loop through the buttons and add click event listeners to each one
+// SecretKeyActivity.forEach(button => {
+//   button.addEventListener('click', () => {
+//     clickCount++;
+//     if (clickCount === 1) {
+//       timeout = setTimeout(() => {
+//         // Single click action
+//         const row = button.closest('tr');
+//         const secretKeyElement = row.querySelector('[data-secret-key]');
+//         const secretKey = secretKeyElement.dataset.secretKey;
+
+//         console.log("Secret Key:", secretKey);
+
+//         var data = {
+//           secretKey: secretKey,
+//         };
+// console.log("single click")
+//         $.ajax({
+//           url: '/generate_session/' + secretKey,
+//           type: 'POST',
+//           data: data,
+//           success: function(response) {
+//             console.log("Single click: Request sent successfully");
+//           },
+//           error: function(xhr) {
+//             // Handle error
+//             alert("Error occurred: " + xhr.responseText);
+//           }
+//         });
+
+//         clickCount = 0; // Reset click count
+//       }, 300); // Change the delay as per your requirement
+//     } else {
+//       clearTimeout(timeout);
+//       clickCount = 0;
+//       const row = button.closest('tr');
+//         const secretKeyElement = row.querySelector('[data-secret-key]');
+//         const secretKey = secretKeyElement.dataset.secretKey;
+//       // Double click action
+//       // Perform your second POST request here
+//       console.log("double click")
+//       var data = {
+//     secretKey: secretKey,
+    
+//   };
+//       $.ajax({
+//   url: '/expire_session/' + secretKey,
+//   type: 'POST',
+//   data:data, // Replace with any additional data you want to send
+//   success: function(response) {
+//    console.log("successfully expire")
+//   },
+//   error: function(xhr) {
+//     // Handle error
+//     alert("Error occurred: " + xhr.responseText);
+//   }
+// });
+//       console.log("Double click: Perform second request");
+//     }
+//   });
+// });
+
+
+SecretKeyActivity.forEach(button => {
+  button.addEventListener('click', () => {
+    clickCount++;
+    if (clickCount === 1) {
+      timeout = setTimeout(() => {
+        // Single click action
+        const row = button.closest('tr');
+const rowIdElement = row.querySelector('[data-id]');
+const rowId = rowIdElement.innerText; // or rowIdElement.textContent
+
+        // const secretKey = secretKeyElement.dataset.secretKey;
+        let newValue='';
+        let key ='';
+        
+
+        var data = {
+          rowId:rowId,
+          newValue:'T',
+          key:'keyStatus'
+
+        };
+console.log("single click")
+console.log(rowId);
+        $.ajax({
+          url: '/updateTable',
+          type: 'POST',
+          data: data,
+          success: function(response) {
+            console.log("Single click: Request sent successfully");
+            location.reload();
+          },
+          error: function(xhr) {
+            // Handle error
+            alert("Error occurred: " + xhr.responseText);
+          }
+        });
+       
+
+        clickCount = 0; // Reset click count
+      }, 300); // Change the delay as per your requirement
+    } 
+    else {
+      clearTimeout(timeout);
+      clickCount = 0;
+      const row = button.closest('tr');
+const rowIdElement = row.querySelector('[data-id]');
+const rowId = rowIdElement.innerText; // or rowIdElement.textContent
+
+      let newValue='';
+        let key ='';
+      console.log("double click")
+      var data = {
+        rowId:rowId,
+    newValue:'F',
+    key:'keyStatus'
+
+    
+  };
+ $.ajax({
+  url: '/updateTable',
+  type: 'POST',
+  data:data, // Replace with any additional data you want to send
+  success: function(response) {
+   console.log("successfully expire")
+   location.reload();
+  },
+  error: function(xhr) {
+    // Handle error
+    alert("Error occurred: " + xhr.responseText);
+  }
+});
+
+
+      console.log("Double click: Perform second request");
+    }
+    // location.reload();
+   });
+  //  location.reload();
+ });
+
+
+
+
+
+//------------------------------------------
+
+// const SecretKeyActivityexp = document.querySelectorAll('#key_btn_exp');
+
+// // Loop through the buttons and add a click event listener to each one
+// SecretKeyActivityexp.forEach(button => {
+//   button.addEventListener('click', () => {
+//     console.log("vlivked")
+//     const row = button.closest('tr');
+//     const secretKeyElement = row.querySelector('[data-secret-key]');
+//     const secretKey = secretKeyElement.dataset.secretKey;
+
+//     console.log("Secret Key:", secretKey);
+   
+  
+     
+//   var data = {
+//     secretKey: secretKey,
+    
+//   };
+//     $.ajax({
+//   url: '/expire_session/' + secretKey,
+//   type: 'POST',
+//   data:data, // Replace with any additional data you want to send
+//   success: function(response) {
+//    console.log("successfully expire")
+//   },
+//   error: function(xhr) {
+//     // Handle error
+//     alert("Error occurred: " + xhr.responseText);
+//   }
+// });
+//   });
+// });
+
+//------------------------------------------------------
+
+$("#logout-button").on("click", function() {
+  // Make an AJAX request to the Flask server to log the user out
+  $.ajax({
+    type: "POST", // or "GET" depending on your server configuration
+    url: "/logout",
+    success: function() {
+      // Redirect the user to the login page after successful logout
+      window.location.href = "/login";
+    },
+    error: function(xhr, status, error) {
+      // Handle errors here
+      console.error(error);
+    }
+  });
+});
+
+</script>
+<script src="{{ url_for('static', filename='admin.js') }}"></script>
+<script src="https://kit.fontawesome.com/3fcbd0cded.js" crossorigin="anonymous"></script>
+
+
+</html>

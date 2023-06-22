@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Gem-Code Editor</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static',filename='favicon.ico') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/sha256.js"></script>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='url.css') }}">
+</head>
+
+<body>
+    <div class="login-container">
+	
+    
+        <h1>URL Generator</h1>
+		
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+        <label for="url">URL:</label>
+        <input type="text" class="scrollable" id="output" placeholder="Unique URL..."  readonly><br><br>
+        <label for="Key">Key:</label>
+        <input type="text" class="scrollable" id="keyout" placeholder="User..."  readonly><br><br>
+       
+        <button type="button" id="myButton" >Submit</button>
+		
+	</div>
+    
+</body>
+
+<script src="{{ url_for('static', filename='url.js') }}"></script>
+</html>

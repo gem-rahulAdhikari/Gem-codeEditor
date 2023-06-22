@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Gem-Code Editor</title>
+  <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static',filename='favicon.ico') }}">
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+</head>
+<style>
+	.submission-list {
+  display: none;
+}
+ul {
+  list-style: none; /* remove default bullet points */
+  margin: 0; /* remove default margin */
+  padding: 0; /* remove default padding */
+}
+
+li {
+  margin-bottom: 10px; /* add margin between list items */
+}
+input{
+	margin-bottom: 10px;
+}
+#logout-button {
+	
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  padding: 10px;
+}
+.container{
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  padding: 20px;
+  background-color: #ffffff;
+  width: 50%;
+  margin: 0 auto;
+  
+}
+h1 {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+button {
+  background-color: #4CAF50; /* Set background color */
+  border: none; /* Remove border */
+  color: white; /* Set text color */
+  padding: 10px 20px; /* Set padding */
+  text-align: center; /* Center text */
+  text-decoration: none; /* Remove underline */
+  display: inline-block; /* Set display to inline-block */
+  font-size: 16px; /* Set font size */
+  margin: 10px; /* Set margin */
+  cursor: pointer; /* Change cursor on hover */
+  border-radius: 5px; /* Add rounded corners */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16); /* Add shadow */
+}
+
+button:hover {
+  background-color: #3e8e41; /* Change background color on hover */
+}
+li span {
+  padding: 0 40px; /* Add left and right padding */
+}
+li {
+  display: flex; /* Use flexbox to align items */
+  align-items: center; /* Center items vertically */
+  margin-bottom: 10px; /* Add margin below each list item */
+}
+
+.person-id {
+  margin-right: 10px; /* Add margin to the right of the name */
+}
+
+.fa-eye {
+  margin-right: 10px; /* Add margin to the right of the eye icon */
+}
+
+.deleteBtn {
+  margin-left: 100px; /* Push the delete button to the right */
+}
+
+
+
+
+
+</style>
+<body>
+	
+
+	<button id="logout-button" type="button">Logout</button>
+  <h1>Admin Page</h1>
+	<div class="container">
+   
+    <input type="text" id="filterInput" placeholder="Filter...">
+	<ul>
+    <li>
+      <span >Name</span>
+      <span >View</span>
+      <span >Remove</span>
+    </li>
+		{% for person in data %}
+		<li>
+			<span class="person-id">{{ person.name }}</span>
+			<i class="fa-solid fa-eye" id="view"></i>
+			
+			<button class="deleteBtn" data-id="{{ person._id }}">Delete</button>
+
+		</li>
+		<ul class="submission-list" style="display: none">
+			
+			<a href="{{person.url}}">{{person.url}}</a>
+		</ul>
+		
+	{% endfor %}
+    </ul>
+  </div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script>
+	const deleteBtns = document.querySelectorAll('.deleteBtn');
+    const listItems = document.querySelectorAll('li');
+	const viewIcons = document.querySelectorAll('.view-icon');
+deleteBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const idToDelete = btn.dataset.id;
+    fetch(`https://us-east-1.aws.data.mongodb-api.com/app/application-0-awqqz/endpoint/deleteUser?id=${idToDelete}`, {
+      method: 'DELETE'
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      console.log(`Person ${idToDelete} deleted successfully`);
+      // Remove the person element from the DOM
+      const liElement = btn.parentNode;
+      liElement.parentNode.removeChild(liElement);
+    })
+    .catch(error => {
+      console.error(`There was a problem deleting person ${idToDelete}:`, error);
+    });
+  });
+});
+
+filterInput.addEventListener('input', () => {
+    const filterValue = filterInput.value.toLowerCase();
+    listItems.forEach(item => {
+      const text = item.textContent.toLowerCase();
+      if (text.includes(filterValue)) {
+        item.style.display = '';
+		
+      } else {
+        item.style.display = 'none';
+		
+      }
+    });
+  });
+
+
+  $(document).ready(function() {
+  // Add a "data-person-id" attribute to each li element to simplify filtering
+  $("ul > li").each(function() {
+    var personId = $(this).find(".person-id").text().toLowerCase();
+    $(this).attr("data-person-id", personId);
+  });
+  $("ul").on("click", "#view", function() {
+    console.log("View button clicked!");
+    var submissionList = $(this).closest('li').nextAll('.submission-list').first();
+    submissionList.toggle();
+	
+  });
+  
+  $("#filterInput").on("keyup", function() {
+	
+    var value = $(this).val().toLowerCase();
+    $("ul > li").filter(function() {
+      var personId = $(this).find(".person-id").text().toLowerCase();
+      var matches = personId.indexOf(value) > -1;
+      if (matches) {
+        $(this).show();
+		console.log("matches the data")
+        $(this).next(".submission-list").show();
+      } else {
+        $(this).hide();
+		console.log("notmatches the data")
+        $(this).next(".submission-list").hide();
+      }
+      return matches;
+    });
+  });
+});
+
+
+$(document).ready(function() {
+  // retrieve URL and store in variable
+  var personUrl = $('.person-url').attr('href');
+  
+  // use personUrl variable in your scripts
+  console.log('Person URL:', personUrl);
+});
+
+$("#logout-button").on("click", function() {
+  // Make an AJAX request to the Flask server to log the user out
+  $.ajax({
+    type: "POST", // or "GET" depending on your server configuration
+    url: "/logout",
+    success: function() {
+      // Redirect the user to the login page after successful logout
+      window.location.href = "/login";
+    },
+    error: function(xhr, status, error) {
+      // Handle errors here
+      console.error(error);
+    }
+  });
+});
+//----------
+
+</script>
+<script src="https://kit.fontawesome.com/3fcbd0cded.js" crossorigin="anonymous"></script>
+
+</html>
